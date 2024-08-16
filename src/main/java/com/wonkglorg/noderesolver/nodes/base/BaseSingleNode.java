@@ -42,7 +42,7 @@ public abstract class BaseSingleNode<T, R> extends BaseNode implements Cloneable
             return;
         }
 
-        if (this.input == this) {
+        if (input == this) {
             throw new IllegalArgumentException("Cannot set input to self");
         }
 
