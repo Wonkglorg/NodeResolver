@@ -99,7 +99,10 @@ public abstract class BaseNode implements Cloneable {
 
 	protected <T> T resolveInput(Object input, Class<T> type) {
 		if (!type.isInstance(input) && input != null) {
-			throw new IllegalStateException(formatClassError(type, input.getClass()));
+			String errorText = "An error occured in %s Reason: (%s)".formatted(this.getClass().getName(),
+					formatClassError(type, input.getClass()));
+
+			throw new IllegalStateException(errorText);
 		}
 
 		return type.cast(input);
