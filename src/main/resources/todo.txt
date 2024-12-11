@@ -1,0 +1,5 @@
+1. Rework the Base Node structure to make it easier expandable
+
+2. Make nodes reuseable, making them single use sucks how would that work with bi inputs?
+
+3. I need 1 main entry where every other value revolves arround, how would it work with lists that should be walked through?
