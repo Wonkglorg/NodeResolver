@@ -5,6 +5,12 @@ import com.wonkglorg.noderesolver.nodes.base.BaseNode;
 
 import java.util.function.BiFunction;
 
+/**
+ * Represents a {@link BiFunction} Node taking in 2 Inputs and Providing 1 Output
+ * @param <T>
+ * @param <U>
+ * @param <R>
+ */
 public class BiModifierNode<T, U, R> extends BaseMultiNode<T, U, R> implements Cloneable {
     protected BiFunction<T, U, R> modifyFunction;
 

@@ -5,6 +5,10 @@ import com.wonkglorg.noderesolver.nodes.base.BaseSingleNode;
 
 import java.util.function.Supplier;
 
+/**
+ * Represents a {@link Supplier} Node taking in no value and providing a value
+ * @param <T>
+ */
 public class InputNode<T> extends BaseSingleNode<Void, T> implements Cloneable {
 
     protected Supplier<T> inputFunction;

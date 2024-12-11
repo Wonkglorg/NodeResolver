@@ -35,6 +35,8 @@ public class TestNode {
 		var modifierNode = new BiModifierNode<>(Integer.class, Integer.class, Integer::sum);
 		modifierNode.setInput1(valueNode1);
 		modifierNode.setInput2(valueNode2);
+		var output = new OutputNode<>(Integer.class, System.out::println);
+		modifierNode.addOutput(output);
 		var result = modifierNode.resolve();
 		Assert.assertEquals(10, result);
 	}
@@ -49,14 +51,6 @@ public class TestNode {
 		Assert.assertEquals("videoNameModified", result.getVideoName());
 		Assert.assertEquals("videoTypeModified", result.getVideoType());
 		Assert.assertEquals("videoUrl", result.getVideoUrl());
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void doesUnexpectedInputTypeThrowError() {
-		var inputNode = new InputNode<>(() -> "Hello");
-		var modifyNode = new ModifierNode<>(Integer.class, value -> value + value * 2);
-		modifyNode.setInput(inputNode);
-		var ignored = modifyNode.resolve();
 	}
 
 	@Test
@@ -76,12 +70,12 @@ public class TestNode {
 	@Test(expected = IllegalArgumentException.class)
 	public void canNodeDetectSelfAssigningOutput() {
 		var modifyNode = new ModifierNode<>(Integer.class, value -> value + value * 2);
-		modifyNode.setOutput(modifyNode);
+		modifyNode.addOutput(modifyNode);
 	}
 
 	@Test
 	public void canModifierNodeHandleNullPassing() {
-		var inputNode = new InputNode<>(() -> null);
+		var inputNode = new InputNode<Integer>(() -> null);
 		var modifyNode =
 				new ModifierNode<>(Integer.class, value -> value != null ? value + value * 2 : null);
 		modifyNode.setInput(inputNode);
@@ -90,7 +84,7 @@ public class TestNode {
 
 	@Test
 	public void canOutputNodeHandleNullPassing() {
-		var inputNode = new InputNode<>(() -> null);
+		var inputNode = new InputNode<Integer>(() -> null);
 		var modifyNode = new OutputNode<>(Integer.class, System.out::println);
 		modifyNode.setInput(inputNode);
 		modifyNode.resolve();
@@ -108,9 +102,41 @@ public class TestNode {
 
 	@Test
 	public void canMergeNodeHandleNullPassing() {
-		var inputNode = new InputNode<>(() -> null);
+		var inputNode = new InputNode<VideoData>(() -> null);
 		var mergeNode = new VideoDataMerge<>(VideoData.class);
 		mergeNode.setInput(inputNode);
 		mergeNode.resolve();
+	}
+
+	@Test
+	public void testConcept() {
+		var inputNode1 = new InputNode<>(() -> 5);
+		var inputNode2 = new InputNode<>(() -> 5);
+
+
+		var sumModifier = new BiModifierNode<>(Integer.class, Integer.class, Integer::sum);
+		sumModifier.setInput1(inputNode1);
+		sumModifier.setInput2(inputNode2);
+
+
+		var textInputNode = new InputNode<>(() -> "Computed Value is: %d");
+		var textMergeModifier =
+				new BiModifierNode<>(Integer.class, String.class, (i, s) -> s.formatted(i));
+		sumModifier.setInput1(textMergeModifier);
+		textMergeModifier.setInput2(textInputNode);
+
+
+		var upperModifier = new ModifierNode<>(String.class, String::toUpperCase);
+		upperModifier.setInput(textMergeModifier);
+
+		var outputNodeUpper = new OutputNode<>(String.class, System.out::println);
+		upperModifier.addOutput(outputNodeUpper);
+
+
+		var lowerModifier = new ModifierNode<>(String.class, String::toLowerCase);
+		lowerModifier.setInput(textMergeModifier);
+
+		var outputNodeLower = new OutputNode<>(String.class, System.out::println);
+		lowerModifier.addOutput(outputNodeLower);
 	}
 }

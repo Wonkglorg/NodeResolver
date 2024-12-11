@@ -4,46 +4,49 @@ import com.wonkglorg.noderesolver.nodes.base.BaseNode;
 import com.wonkglorg.noderesolver.nodes.base.BaseSingleNode;
 
 /**
- * Modifies the input data with data not derived from an input node
+ * Modifies the input data with data kept by this node itself
  *
  * @param <T>
  */
 public abstract class LocalMergeNode<T> extends BaseSingleNode<T, T> {
 
 
-    public LocalMergeNode(Class<T> returnType) {
-        super(returnType);
-    }
+	protected LocalMergeNode(Class<T> returnType) {
+		super(returnType);
+	}
 
-    /**
-     * Merge the input data with the data in this node
-     *
-     * @param input The input data
-     * @return The merged data
-     */
-    abstract protected T merge(T input);
+	/**
+	 * Merge the input data with the data in this node
+	 *
+	 * @param input The input data
+	 * @return The merged data
+	 */
+	protected abstract T merge(T input);
 
-    @Override
-    public Object resolve() {
-        if (resolved) {
-            return result;
-        }
 
-        resolved = true;
+	@Override
+	public Object resolve() {
+		if (resolved) {
+			return result;
+		}
 
-        T inputData = null;
+		resolved = true;
 
-        if (this.input != null) inputData = super.resolveInput(input.resolve(), inputType);
+		T inputData = null;
 
-        result = merge(inputData);
+		if (this.input != null) {
+			inputData = super.resolveInput(input.resolve(), inputType);
+		}
 
-        // resolves downstream nodes
-        if (outputs != null) {
-            for (BaseNode output : outputs) {
-                output.resolve();
-            }
-        }
+		result = merge(inputData);
 
-        return result;
-    }
+		// resolves downstream nodes
+		if (outputs != null) {
+			for (BaseNode output : outputs) {
+				output.resolve();
+			}
+		}
+
+		return result;
+	}
 }

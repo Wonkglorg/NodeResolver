@@ -5,41 +5,66 @@ import com.wonkglorg.noderesolver.nodes.base.BaseSingleNode;
 
 import java.util.function.Function;
 
+/**
+ * Represents a {@link Function}Node taking in 1 input and providing 1 output
+ *
+ * @param <T>
+ * @param <R>
+ */
 public class ModifierNode<T, R> extends BaseSingleNode<T, R> implements Cloneable {
-    protected Function<T, R> modifyFunction;
+	protected Function<T, R> modifyFunction;
 
-    public ModifierNode(Class<T> inputType, Function<T, R> modify) {
-        super(inputType);
-        this.modifyFunction = modify;
-    }
+	public ModifierNode(Class<T> inputType, Function<T, R> modify) {
+		super(inputType);
+		this.modifyFunction = modify;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object resolve() {
-        if (resolved) {
-            return result;
-        }
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object resolve() {
+		T inputData = null;
+		R value = null;
 
-        resolved = true;
+		if (this.input != null) {
+			inputData = super.resolveInput(input.resolve(), inputType);
+			if (cacheValues) {
+				value = cache.getOrDefault(inputData, null);
+				if (value != null) {
+					return value;
+				}
+			}
+		}
 
-        T inputData = null;
+		value = modifyFunction.apply(inputData);
+		cache.put(inputData, value);
+		// resolves downstream nodes
+		if (outputs != null) {
+			for (BaseNode output : outputs) {
+				output.resolve();
+			}
+		}
 
-        if (this.input != null) inputData = super.resolveInput(input.resolve(), inputType);
-        result = modifyFunction.apply(inputData);
-        // resolves downstream nodes
-        if (outputs != null) {
-            for (BaseNode output : outputs) {
-                output.resolve();
-            }
-        }
+		return value;
+	}
 
-        return result;
-    }
+	@Override
+	public void clearCache() {
+		cache.clear();
+	}
 
-    @Override
-    public ModifierNode<T, R> clone() {
-        ModifierNode<T, R> clonedNode = (ModifierNode<T, R>) super.clone();
-        clonedNode.modifyFunction = modifyFunction;
-        return clonedNode;
-    }
+	/**
+	 * @param cacheValues if true set to true caches inputs and their resolved outputs (should be
+	 * used
+	 * when an input predictably always leads to the same output)
+	 */
+	public void setCacheValues(boolean cacheValues) {
+		this.cacheValues = cacheValues;
+	}
+
+	@Override
+	public ModifierNode<T, R> clone() {
+		ModifierNode<T, R> clonedNode = (ModifierNode<T, R>) super.clone();
+		clonedNode.modifyFunction = modifyFunction;
+		return clonedNode;
+	}
 }

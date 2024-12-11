@@ -4,6 +4,10 @@ import com.wonkglorg.noderesolver.nodes.base.BaseSingleNode;
 
 import java.util.function.Consumer;
 
+/**
+ * Represents a {@link Consumer} Node taking in 1 value and returning nothing
+ * @param <T>
+ */
 public class OutputNode<T> extends BaseSingleNode<T, Void> implements Cloneable {
 	protected Consumer<T> outputFunction;
 

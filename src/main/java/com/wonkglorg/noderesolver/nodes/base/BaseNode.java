@@ -1,9 +1,23 @@
 package com.wonkglorg.noderesolver.nodes.base;
 
 public abstract class BaseNode implements Cloneable {
+	//todo:jmd remove this? solve it in another way rather than setting this node permamently to
+	// resolved
 	protected boolean resolved = false;
+	protected boolean cacheValues = false;
 
+	/**
+	 * Can be called to resolve the entire node tree associated with this node
+	 *
+	 * @return returns the resolved object from this node (If the node is an output node it returns
+	 * null)
+	 */
 	public abstract Object resolve();
+
+	/**
+	 * Clears this nodes cache for mapped inputs to outputs
+	 */
+	public abstract void clearCache();
 
 	@Override
 	public BaseNode clone() {

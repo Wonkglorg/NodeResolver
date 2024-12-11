@@ -4,6 +4,11 @@ import com.wonkglorg.noderesolver.nodes.base.BaseMultiNode;
 
 import java.util.function.BiConsumer;
 
+/**
+ * Represents a {@link java.util.function.BiConsumer} taking in 2 values and returning nothing
+ * @param <T>
+ * @param <U>
+ */
 public class BiOutputNode<T, U> extends BaseMultiNode<T, U, Void> implements Cloneable {
     protected BiConsumer<T, U> outputFunction;
 
@@ -37,4 +42,6 @@ public class BiOutputNode<T, U> extends BaseMultiNode<T, U, Void> implements Clo
         clonedNode.outputFunction = outputFunction;
         return clonedNode;
     }
+
+
 }
