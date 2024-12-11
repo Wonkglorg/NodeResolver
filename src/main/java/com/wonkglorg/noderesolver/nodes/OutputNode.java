@@ -41,6 +41,11 @@ public class OutputNode<T> extends BaseSingleNode<T, Void> implements Cloneable 
 	}
 
 	@Override
+	public void clearCache() {
+
+	}
+
+	@Override
 	public OutputNode<T> clone() {
 		OutputNode<T> clonedNode = (OutputNode<T>) super.clone();
 		clonedNode.outputFunction = outputFunction;

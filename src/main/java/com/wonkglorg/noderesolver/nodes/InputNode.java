@@ -43,6 +43,11 @@ public class InputNode<T> extends BaseSingleNode<Void, T> implements Cloneable {
     }
 
     @Override
+    public void clearCache() {
+
+    }
+
+    @Override
     public InputNode<T> clone() {
         InputNode<T> clonedNode = (InputNode<T>) super.clone();
         clonedNode.inputFunction = inputFunction;

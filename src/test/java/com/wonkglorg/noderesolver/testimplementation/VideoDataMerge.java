@@ -11,6 +11,11 @@ public class VideoDataMerge<T extends VideoData> extends LocalMergeNode<T> {
 	}
 
 	@Override
+	public void clearCache() {
+
+	}
+
+	@Override
 	protected T merge(T input) {
 		if (input != null) {
 			input.setVideoName(videoData.getVideoName());

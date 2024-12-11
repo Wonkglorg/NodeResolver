@@ -1,5 +1,6 @@
 package com.wonkglorg.noderesolver;
 
+import com.wonkglorg.newnoderesolver.ObjectHolder;
 import com.wonkglorg.noderesolver.nodes.BiModifierNode;
 import com.wonkglorg.noderesolver.nodes.InputNode;
 import com.wonkglorg.noderesolver.nodes.ModifierNode;
@@ -110,33 +111,40 @@ public class TestNode {
 
 	@Test
 	public void testConcept() {
-		var inputNode1 = new InputNode<>(() -> 5);
-		var inputNode2 = new InputNode<>(() -> 5);
-
+		NodeService nodeService = new NodeService();
+		nodeService.getNode(InputNode.class,"FiveInput");
 
 		var sumModifier = new BiModifierNode<>(Integer.class, Integer.class, Integer::sum);
-		sumModifier.setInput1(inputNode1);
-		sumModifier.setInput2(inputNode2);
 
 
-		var textInputNode = new InputNode<>(() -> "Computed Value is: %d");
 		var textMergeModifier =
 				new BiModifierNode<>(Integer.class, String.class, (i, s) -> s.formatted(i));
-		sumModifier.setInput1(textMergeModifier);
-		textMergeModifier.setInput2(textInputNode);
+		textMergeModifier.setInput1(sumModifier);
+		textMergeModifier.setInput2(new InputNode<>(() -> "Computed Value is: %d"));
 
 
 		var upperModifier = new ModifierNode<>(String.class, String::toUpperCase);
 		upperModifier.setInput(textMergeModifier);
-
-		var outputNodeUpper = new OutputNode<>(String.class, System.out::println);
-		upperModifier.addOutput(outputNodeUpper);
+		upperModifier.addOutput(System.out::println);
 
 
 		var lowerModifier = new ModifierNode<>(String.class, String::toLowerCase);
 		lowerModifier.setInput(textMergeModifier);
+		lowerModifier.addOutput(System.out::println);
 
-		var outputNodeLower = new OutputNode<>(String.class, System.out::println);
-		lowerModifier.addOutput(outputNodeLower);
+		lowerModifier.resolve();
+	}
+
+
+	@Test
+	public void testValueHolder(){
+
+		ObjectHolder.of("5")
+				.toInt(Integer::parseInt)
+				.add(2)
+				.peak(System.out::println)
+				.multiply(5)
+				.peak(System.out::println)
+		;
 	}
 }

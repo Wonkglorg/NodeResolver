@@ -47,6 +47,11 @@ public class BiModifierNode<T, U, R> extends BaseMultiNode<T, U, R> implements C
     }
 
     @Override
+    public void clearCache() {
+
+    }
+
+    @Override
     public BiModifierNode<T, U, R> clone() {
         BiModifierNode<T, U, R> clonedNode = (BiModifierNode<T, U, R>) super.clone();
         clonedNode.modifyFunction = modifyFunction;

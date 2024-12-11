@@ -37,6 +37,11 @@ public class BiOutputNode<T, U> extends BaseMultiNode<T, U, Void> implements Clo
     }
 
     @Override
+    public void clearCache() {
+
+    }
+
+    @Override
     public BiOutputNode<T, U> clone() {
         BiOutputNode<T, U> clonedNode = (BiOutputNode<T, U>) super.clone();
         clonedNode.outputFunction = outputFunction;
